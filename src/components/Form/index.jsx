@@ -1,103 +1,127 @@
-import React, { useState, useEffect} from 'react';
-// import Todo from '../Todo';
-// import './index.css'
+import React, { useState, useEffect } from "react";
+import { nanoid } from "nanoid";
+import "./index.css";
 
 const Form = () => {
+  const [todo, setTodo] = useState([]);
+  const [task, setTask] = useState("");
+  const [editing, setEditing] = useState(null);
+  const [edit, setEdit] = useState("");
+  const date = new Date();
 
-const date = new Date()
-
-const [name, setName] = useState('')
-const [taskStatus, setTaskStatus] = useState(false)
-const [todo, setTodo] = useState([])
-const [task, setTask] = useState("")
- 
-const handleSubmit = e => {
-    e.preventDefault()
-      setTask({
-         taskName: name,
-         isComplete: taskStatus,
-         createdAt: `${date.getDate()} / ${date.getMonth() + 1}`,
-         iD: Math.random().toString(36).substring(2, 9)
-     }) 
-     setName('')
-     }
-
-const handleChangeInput = e => {
-    setName(e.target.value)
-    // console.log(name)
-}
-
-useEffect(() => {
-  setTodo(todo => [...todo, task])
-},[task])
-
-
-const changeStatus = task => {
-  console.log(task)
-  // console.log(taskStatus)
-     if(task.isComplete === taskStatus) {
-       task.isComplete = !taskStatus
+  useEffect(() => {
+    const todoStorage = localStorage.getItem("todo");
+    const loadStorage = JSON.parse(todoStorage);
+    if (loadStorage) {
+      setTodo(loadStorage);
     }
-      setTaskStatus(!taskStatus)
-}
+  }, []);
 
- const editTask = task => {
-  console.log(task.taskName)
-  const edit = prompt("Cambia la tarea:")
-  console.log(edit)
-  setName(task.taskName = edit)
-}
+  useEffect(() => {
+    const todoStorage = JSON.stringify(todo);
+    localStorage.setItem("todo", todoStorage);
+  }, [todo]);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newTask = {
+      taskName: task,
+      isComplete: false,
+      createdAt: `${date.getDate()} / ${
+        date.getMonth() + 1
+      } / ${date.getFullYear()}`,
+      id: nanoid(),
+    };
+    setTodo((todo) => [...todo, newTask]);
+    setTask("");
+  };
 
-const deleteTask = iD => {
-  const updateTodo = todo.filter(to => iD !== to.iD)
-  // console.log(updateTodo)
-  setTodo(updateTodo)
- }
-//  console.log(task)
-//  console.log(todo)
+  const handleChangeInput = (e) => {
+    setTask(e.target.value);
+  };
+
+  const deleteTask = (id) => {
+    const updateTodo = todo.filter((to) => id !== to.id);
+    setTodo(updateTodo);
+  };
+
+  const changeStatus = (id) => {
+    const updateTodo = todo.map((to) => {
+      if (to.id === id) {
+        to.isComplete = !to.isComplete;
+      }
+      return to;
+    });
+    setTodo(updateTodo);
+  };
+
+  const saveEdit = (id) => {
+    const updateTodo = todo.map((to) => {
+      if (to.id === id) {
+        to.taskName = edit;
+      }
+      return to;
+    });
+    setTodo(updateTodo);
+    setEdit("");
+    setEditing(null);
+  };
 
   return (
-    <>
-    <div >
-        <h1>Mis tareas</h1>
-        <form className='taskForm' onSubmit={handleSubmit}>
-        <input  
-                type='text' 
-                placeholder='Tarea' 
-                value={name}
-                onChange={handleChangeInput}/>
-        <button type='submit'>➕</button>
-        </form>
-              {todo.map( (task, index) => {
-                console.log(task.index)
-                console.log(task.iD)
-                      if (task !== "") {
-                      let { taskName, isComplete, createdAt, iD} = task
-                      return (
-                      <div key={index} className={isComplete ? 'task complete' : 'task pending'}>
-                          <h2>{taskName}</h2>
-                          <i>{createdAt}</i>
-                          <div  className="botonera">
-                          <button onClick={(e) => deleteTask(iD)}>❌</button> 
-                          <button onClick={(e) => editTask(task)}>✏️</button>
-                          <button onClick={(e) => changeStatus(task)}>⟲</button>
-                          </div>
-                      </div>
-                      )}
-               }
+    <div>
+      <h2>Mis tareas</h2>
+      <form className="taskForm" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Tarea"
+          value={task}
+          onChange={handleChangeInput}
+        />
+        <button className="addBtn" type="submit">
+          ➕
+        </button>
+      </form>
+      {todo.map(({ taskName, isComplete, createdAt, id }) => {
+        console.log(todo);
+        return (
+          <div
+            key={id}
+            className={isComplete ? "task complete" : "task pending"}
+          >
+            <form onSubmit={() => saveEdit(id)}>
+              {editing === id ? (
+                <input
+                  type="text"
+                  value={edit}
+                  onChange={(e) => setEdit(e.target.value)}
+                  autoFocus
+                />
+              ) : (
+                <>
+                  <h3>{taskName}</h3>
+                  <i>{createdAt}</i>
+                </>
               )}
-      </div>
-    </>
-  )
-}
+              {editing === id ? (
+                <button type="submit" className="saveEdit">
+                  Guardar
+                </button>
+              ) : null}
+            </form>
+            <div className="botonera">
+              <input
+                type="checkbox"
+                onChange={() => changeStatus(id)}
+                checked={isComplete}
+              />
+              <button onClick={() => deleteTask(id)}>❌</button>
+              <button onClick={() => setEditing(id)}>✏️</button>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 export default Form;
-
-
-
-
-
-
-
-

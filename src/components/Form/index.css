@@ -13,8 +13,10 @@ body {
   margin: 20px;
 }
 
-h1 {
+h2 {
    text-align: center;
+   text-transform: uppercase;
+   margin: 10px;
 }
 
 input, textarea, button {
@@ -45,11 +47,20 @@ button {
   cursor: pointer;
 }
 
-button[type='submit'] {
+.addBtn {
   background-color: greenyellow;
 }
 
 .botonera {
   display: flex;
   justify-content: end;
+ }
+
+ input[type='checkbox'] {
+  cursor: pointer;
+  align-self: center;
+ }
+ 
+ .saveEdit{
+   font-weight: 800;
  }
