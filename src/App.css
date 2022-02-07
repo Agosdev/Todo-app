@@ -53,3 +53,12 @@ button[type='submit'] {
   display: flex;
   justify-content: end;
  }
+
+ input[type='checkbox'] {
+  cursor: pointer;
+  align-self: center;
+ }
+ 
+ .saveEdit{
+   font-weight: 800;
+ }

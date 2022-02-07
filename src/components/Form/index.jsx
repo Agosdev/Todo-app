@@ -4,59 +4,69 @@ import React, { useState, useEffect} from 'react';
 
 const Form = () => {
 
-const date = new Date()
-
-const [name, setName] = useState('')
-const [taskStatus, setTaskStatus] = useState(false)
-const [todo, setTodo] = useState([])
-const [task, setTask] = useState("")
+  
+  const [todo, setTodo] = useState([])
+  const [task, setTask] = useState("")
+  const [editing, setEditing] = useState(null)
+  const [edit, setEdit] = useState("")
+  const date = new Date()
  
+useEffect(()=> {
+  const todoStorage = localStorage.getItem("todo")
+  const loadStorage = JSON.parse(todoStorage)
+  if (loadStorage) {
+      setTodo(loadStorage)
+  }
+},[])
+
+useEffect(()=> {
+  const todoStorage = JSON.stringify(todo)
+  localStorage.setItem("todo", todoStorage)
+},[todo])
+
 const handleSubmit = e => {
     e.preventDefault()
-      setTask({
-         taskName: name,
-         isComplete: taskStatus,
-         createdAt: `${date.getDate()} / ${date.getMonth() + 1}`,
-         iD: Math.random().toString(36).substring(2, 9)
-     }) 
-     setName('')
+    const newTask = {
+      taskName: task,
+      isComplete: false,
+      createdAt: `${date.getDate()} / ${date.getMonth() + 1} / ${date.getFullYear()}`,
+      iD: Math.random().toString(36).substring(2, 9)
      }
+      setTodo(todo => [...todo, newTask]) 
+      setTask('')
+}
 
 const handleChangeInput = e => {
-    setName(e.target.value)
-    // console.log(name)
-}
-
-useEffect(() => {
-  setTodo(todo => [...todo, task])
-},[task])
-
-
-const changeStatus = task => {
-  console.log(task)
-  // console.log(taskStatus)
-     if(task.isComplete === taskStatus) {
-       task.isComplete = !taskStatus
-    }
-      setTaskStatus(!taskStatus)
-}
-
- const editTask = task => {
-  console.log(task.taskName)
-  const edit = prompt("Cambia la tarea:")
-  console.log(edit)
-  setName(task.taskName = edit)
-}
-
-
-const deleteTask = iD => {
-  const updateTodo = todo.filter(to => iD !== to.iD)
-  // console.log(updateTodo)
-  setTodo(updateTodo)
+    setTask(e.target.value)
  }
-//  console.log(task)
-//  console.log(todo)
 
+ const deleteTask = iD => {
+  const updateTodo = todo.filter(to => iD !== to.iD)
+   setTodo(updateTodo)
+ }
+
+ const changeStatus = iD => {
+  const updateTodo = todo.filter(to => {
+    if (to.iD === iD) {
+        to.isComplete = !to.isComplete
+    }
+    return todo
+  })
+   setTodo(updateTodo)
+ }
+ 
+ const saveEdit = iD => {
+  const updateTodo = todo.filter(to => {
+    if (to.iD === iD) {
+        to.taskName = edit
+    }
+    return todo
+  })
+   setTodo(updateTodo)
+   setEdit("")
+   setEditing(null)
+ }
+ 
   return (
     <>
     <div >
@@ -65,39 +75,39 @@ const deleteTask = iD => {
         <input  
                 type='text' 
                 placeholder='Tarea' 
-                value={name}
+                value={task}
                 onChange={handleChangeInput}/>
         <button type='submit'>➕</button>
         </form>
-              {todo.map( (task, index) => {
-                console.log(task.index)
-                console.log(task.iD)
-                      if (task !== "") {
-                      let { taskName, isComplete, createdAt, iD} = task
+              {todo.map( (todoTask, index) => {
+                        let { taskName, isComplete, createdAt, iD} = todoTask
                       return (
                       <div key={index} className={isComplete ? 'task complete' : 'task pending'}>
-                          <h2>{taskName}</h2>
+                        {editing === iD ?                          
+                        <input  
+                        type='text' 
+                        value={edit}
+                        onChange={(e) => setEdit(e.target.value)}
+                        autoFocus
+                        />
+                        : <h2>{taskName}</h2>
+                        }                       
                           <i>{createdAt}</i>
-                          <div  className="botonera">
+                          <div className="botonera">
+                          <input type='checkbox' onChange={(e) => changeStatus(iD)} checked={isComplete}/>
                           <button onClick={(e) => deleteTask(iD)}>❌</button> 
-                          <button onClick={(e) => editTask(task)}>✏️</button>
-                          <button onClick={(e) => changeStatus(task)}>⟲</button>
+                          <button onClick={(e) => setEditing(iD)}>✏️</button>
+                          {editing === iD ?                          
+                          <button className='saveEdit' onClick={(e) => saveEdit(iD)}>Guardar</button>
+                          : null
+                          }
                           </div>
                       </div>
                       )}
-               }
-              )}
+                      )}
       </div>
     </>
   )
 }
 
 export default Form;
-
-
-
-
-
-
-
-
