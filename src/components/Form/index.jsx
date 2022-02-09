@@ -46,21 +46,33 @@ const Form = () => {
   };
 
   const changeStatus = (id) => {
-    const updateTodo = todo.map((to) => {
+    const updatedTodo = todo.map((to) => {
       if (to.id === id) {
-        to.isComplete = !to.isComplete;
+        const updatedTask = {
+          ...to,
+          isComplete: !to.isComplete,
+        };
+        return updatedTask;
+      } else {
+        return to;
       }
-      return to;
     });
-    setTodo(updateTodo);
+    console.log(updatedTodo);
+    setTodo(updatedTodo);
   };
 
   const saveEdit = (id) => {
     const updateTodo = todo.map((to) => {
       if (to.id === id) {
-        to.taskName = edit;
+        const updatedTask = {
+          ...to,
+          taskName: edit
+        };
+        return updatedTask;
+      } 
+      else {
+        return to;
       }
-      return to;
     });
     setTodo(updateTodo);
     setEdit("");
@@ -69,20 +81,20 @@ const Form = () => {
 
   return (
     <div>
-      <h2>Mis tareas</h2>
-      <form className="taskForm" onSubmit={handleSubmit}>
+      <h2 className="title">Mis tareas</h2>
+      <form className="form" onSubmit={handleSubmit}>
         <input
+          className="form__input"
           type="text"
           placeholder="Tarea"
           value={task}
           onChange={handleChangeInput}
         />
-        <button className="addBtn" type="submit">
+        <button className="form__btn" type="submit">
           ➕
         </button>
       </form>
       {todo.map(({ taskName, isComplete, createdAt, id }) => {
-        console.log(todo);
         return (
           <div
             key={id}
@@ -91,6 +103,7 @@ const Form = () => {
             <form onSubmit={() => saveEdit(id)}>
               {editing === id ? (
                 <input
+                  className="form__input"
                   type="text"
                   value={edit}
                   onChange={(e) => setEdit(e.target.value)}
@@ -99,23 +112,28 @@ const Form = () => {
               ) : (
                 <>
                   <h3>{taskName}</h3>
-                  <i>{createdAt}</i>
+                  <span>{createdAt}</span>
                 </>
               )}
               {editing === id ? (
-                <button type="submit" className="saveEdit">
+                <button type="submit" className="btn task__saveEdit-btn">
                   Guardar
                 </button>
               ) : null}
             </form>
-            <div className="botonera">
+            <div className="task__btn-bar">
               <input
+                className="form__input-check"
                 type="checkbox"
                 onChange={() => changeStatus(id)}
                 checked={isComplete}
               />
-              <button onClick={() => deleteTask(id)}>❌</button>
-              <button onClick={() => setEditing(id)}>✏️</button>
+              <button className="btn" onClick={() => deleteTask(id)}>
+                ❌
+              </button>
+              <button className="btn" onClick={() => setEditing(id)}>
+                ✏️
+              </button>
             </div>
           </div>
         );

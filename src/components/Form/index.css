@@ -7,26 +7,26 @@ body {
   background-color: rgb(232, 235, 221);
 }
 
-.taskForm {
+.title {
+  text-align: center;
+  text-transform: uppercase;
+  margin: 10px;
+}
+
+.form {
   display: flex;
   justify-content: center;
   margin: 20px;
 }
 
-h2 {
-   text-align: center;
-   text-transform: uppercase;
-   margin: 10px;
-}
-
-input, textarea, button {
+.form__input, .form__btn, .btn {
   border: none;
   margin: 5px;
   padding: 10px;
 }
 
-textarea {
-  height: 100px;
+.form__btn {
+  background-color: greenyellow;
 }
 
 .task {
@@ -41,26 +41,23 @@ textarea {
   background-color: rgb(193, 253, 132);
 }
 
-button {
+.btn {
   background-color: transparent;
   padding: 5px;
   cursor: pointer;
 }
 
-.addBtn {
-  background-color: greenyellow;
+.task__saveEdit-btn{
+  font-weight: 800;
 }
 
-.botonera {
+.task__btn-bar {
   display: flex;
   justify-content: end;
  }
 
- input[type='checkbox'] {
+.form__input-check {
   cursor: pointer;
   align-self: center;
  }
  
- .saveEdit{
-   font-weight: 800;
- }
