@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import Buttons from "../Buttons/buttons";
 import { nanoid } from "nanoid";
-import "./index.css";
+import "./form.css";
 
 const Form = () => {
   const [todo, setTodo] = useState([]);
@@ -66,11 +67,10 @@ const Form = () => {
       if (to.id === id) {
         const updatedTask = {
           ...to,
-          taskName: edit
+          taskName: edit,
         };
         return updatedTask;
-      } 
-      else {
+      } else {
         return to;
       }
     });
@@ -115,26 +115,19 @@ const Form = () => {
                   <span>{createdAt}</span>
                 </>
               )}
+
               {editing === id ? (
                 <button type="submit" className="btn task__saveEdit-btn">
                   Guardar
                 </button>
               ) : null}
             </form>
-            <div className="task__btn-bar">
-              <input
-                className="form__input-check"
-                type="checkbox"
-                onChange={() => changeStatus(id)}
-                checked={isComplete}
-              />
-              <button className="btn" onClick={() => deleteTask(id)}>
-                ❌
-              </button>
-              <button className="btn" onClick={() => setEditing(id)}>
-                ✏️
-              </button>
-            </div>
+            <Buttons
+              onChange={() => changeStatus(id)}
+              checked={isComplete}
+              onClickDelete={() => deleteTask(id)}
+              onClickEdit={() => setEditing(id)}
+            />
           </div>
         );
       })}

@@ -1,0 +1,19 @@
+.btn {
+  border: none;
+  margin: 5px;
+  padding: 10px;
+  background-color: transparent;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.task__btn-bar {
+  display: flex;
+  justify-content: end;
+ }
+
+.form__input-check {
+  cursor: pointer;
+  align-self: center;
+ }
+ 

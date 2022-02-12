@@ -50,14 +50,3 @@ body {
 .task__saveEdit-btn{
   font-weight: 800;
 }
-
-.task__btn-bar {
-  display: flex;
-  justify-content: end;
- }
-
-.form__input-check {
-  cursor: pointer;
-  align-self: center;
- }
- 
